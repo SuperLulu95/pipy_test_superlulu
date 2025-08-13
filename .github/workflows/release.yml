@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: test-pypi
+      url: https://test.pypi.org/project/pipy-test-superlulu/
     permissions:
       id-token: write
 
@@ -29,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
+      - name: Prepare README for PyPI
+        run: sed -i 's/\[!WARNING\]/⚠️ **Warning**/' README.md
+
       - name: Build package
         run: uv build
 
@@ -36,5 +40,4 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
-          skip-existing: true
           verbose: true
