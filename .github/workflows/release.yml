@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: test-pypi
-      url: https://test.pypi.org/project/pipy-test-superlulu/
     permissions:
       id-token: write
 
