@@ -1,4 +1,4 @@
-name: Release to TestPyPI
+name: Release to PyPI
 
 on:
   release:
@@ -7,31 +7,36 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    environment: test-pypi
+    environment:
+      name: test-pypi
+      url: https://test.pypi.org/project/pipy-test-superlulu/
     permissions:
       id-token: write
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout the repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.9"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
 
-    - name: Install uv
-      uses: astral-sh/setup-uv@v2
-      with:
-        version: "latest"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
 
-    - name: Install dependencies
-      run: uv sync
+      - name: Install dependencies
+        run: uv sync
 
-    - name: Build package
-      run: uv build
+      - name: Prepare README for PyPI
+        run: sed -i 's/\[!WARNING\]/⚠️ **Warning**/' README.md
 
-    - name: Publish to TestPyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository-url: https://test.pypi.org/legacy/
+      - name: Build package
+        run: uv build
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
